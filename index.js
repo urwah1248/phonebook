@@ -48,7 +48,7 @@ app.get('/api/persons/:id', (req, res) => {
         res.json(person)
     }
     else{
-        res.send('person doesnt exist')
+        res.send('<p style="font-family: consolas">person doesnt exist</p>')
     }
 })
 
@@ -104,7 +104,7 @@ app.post('/api/persons', (req,res) => {
   
     res.json(person)
 })
-  
+
 
 const PORT = process.env.PORT || 3001;
 
