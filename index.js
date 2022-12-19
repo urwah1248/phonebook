@@ -1,8 +1,11 @@
+require('dotenv').config()
 const express = require('express')
 const app = express()
 const morgan = require('morgan')
 const bodyParser = require('body-parser')
 const dataJson = require('./persons.json')
+const Person = require('./models/person')
+
 
 let persons = dataJson
 
@@ -27,12 +30,14 @@ app.use(morgan((token, request, response) => {
 
 // Persons Data
 app.get('/api/persons', (req, res) => {
-    res.json(persons)
+    Person.find({}).then(person => {
+        res.json(person)
+    })
 })
 
 // infoPage HTML Code for the info Response
 const infoPage = `
-    <p>Phonebook has info for ${persons.length} people</p>
+    <p>Phonebook has info for ${Person.length-1} people</p>
     <p>${Date()}
 `
 // Information Page Response
@@ -42,21 +47,18 @@ app.get('/api/info', (req, res) => {
 
 // Using id parameters for a single person's output
 app.get('/api/persons/:id', (req, res) => {
-    const id = Number(req.params.id)
-    const person = persons.find(thePerson => thePerson.id === id)
-    if(person){
+    Person.findById(req.params.id).then(person => {
         res.json(person)
-    }
-    else{
-        res.send('<p style="font-family: consolas">person doesnt exist</p>')
-    }
+    })
+    .catch(err => res.send(err))
 })
 
 // Deleting a person using id parameter
 app.delete('/api/persons/:id', (req, res) => {
-  const id = Number(req.params.id)
-  persons = persons.filter(item => item.id !== id)
-  res.status(204).end()
+    Person.findByIdAndDelete(req.params.id).then(() => {
+        Person.find({}).then(result => res.send)
+    })
+    .catch(err => res.send(err))
 })
 
 // ID generator for adding a new person
