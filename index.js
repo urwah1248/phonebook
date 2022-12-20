@@ -5,6 +5,7 @@ const morgan = require('morgan')
 const bodyParser = require('body-parser')
 const dataJson = require('./persons.json')
 const Person = require('./models/person')
+const { response } = require('express')
 
 
 let persons = dataJson
@@ -55,8 +56,9 @@ app.get('/api/persons/:id', (req, res) => {
 
 // Deleting a person using id parameter
 app.delete('/api/persons/:id', (req, res) => {
-    Person.findByIdAndDelete(req.params.id).then(() => {
-        Person.find({}).then(result => res.send)
+    Person.findByIdAndRemove(req.params.id).then((result) => {
+        response.send(result)
+        response.status(204).end()
     })
     .catch(err => res.send(err))
 })
