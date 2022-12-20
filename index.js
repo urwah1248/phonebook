@@ -28,7 +28,6 @@ app.use(morgan((token, request, response) => {
   })
 );
 
-
 // Persons Data
 app.get('/api/persons', (req, res) => {
     Person.find({}).then(person => {
@@ -37,13 +36,19 @@ app.get('/api/persons', (req, res) => {
 })
 
 // infoPage HTML Code for the info Response
-const infoPage = `
-    <p>Phonebook has info for ${Person.length-1} people</p>
-    <p>${Date()}
-`
+
+
+
 // Information Page Response
 app.get('/api/info', (req, res) => {
-    res.send(infoPage)
+    Person.find({}).then(person => {
+        const numberOfPersons = person.length
+        const infoPage = `
+            <p>Phonebook has info for ${numberOfPersons} people</p>
+            <p>${Date()}
+        `
+        res.send(infoPage)
+    })
 })
 
 // Using id parameters for a single person's output
